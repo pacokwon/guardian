@@ -1,0 +1,6 @@
+[submodule "guardian-client"]
+	path = guardian-client
+	url = https://github.com/pacokwon/guardian-client.git
+[submodule "guardian-server"]
+	path = guardian-server
+	url = https://github.com/pacokwon/guardian-server.git
