@@ -1,0 +1,52 @@
+version: '3.7'
+services:
+  backend:
+    build: './guardian-server'
+    image: 'pacokwon/guardian-server'
+    container_name: 'guardian-server'
+    environment:
+      PORT: 3000
+    expose:
+      - "3000"
+    networks:
+      guardian-server:
+        aliases:
+          - backend
+    depends_on:
+      - db
+    environment:
+      DB_HOST: 'db'
+      DB_USERNAME: 'root'
+      DB_PASSWORD: 'keyboardcat'
+  frontend:
+    build:
+      context: './guardian-client'
+      args:
+        - VUE_APP_API_URL= # empty argument to pass empty string
+    image: 'pacokwon/guardian-client'
+    container_name: 'guardian-client'
+    ports:
+      - '8080:80'
+    networks:
+      guardian-server:
+    depends_on:
+      - backend
+  db:
+    image: 'mysql:5.7'
+    container_name: 'guardian-db'
+    volumes:
+      - './guardian-server/setup:/docker-entrypoint-initdb.d'
+      - 'db-volume:/var/lib/mysql'
+    environment:
+      MYSQL_ROOT_PASSWORD: 'keyboardcat'
+      MYSQL_DATABASE: 'Guardian'
+    networks:
+      guardian-server:
+        aliases:
+          - db
+
+volumes:
+  db-volume:
+
+networks:
+  guardian-server:
